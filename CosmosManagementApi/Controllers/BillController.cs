@@ -435,7 +435,7 @@ namespace CosmosManagementApi.Controllers
 
     //用于传输用户同时购买产品和项目开单
     //POST api/<ProductController>
-    [Authorize(Roles = "O1Staff, Admin")]
+    //[Authorize(Roles = "O1Staff, Admin")]
     [HttpPost("CustomerBills")]
     public IActionResult PostCustomerBills([FromBody] CustomerBillsPostDto Bills)
     {
@@ -516,7 +516,7 @@ namespace CosmosManagementApi.Controllers
         }//check if has null value if has return fail
 
 
-              //_context.SaveChanges();
+        _context.SaveChanges();//储存 获得bill主键id
 
         //foreach (PaymentMethodDto pmto in Bills.PaymentMethods.Where(m => m.Method == "Card")){
         //    if (_context.Cards.Where(card => card.Id == pmto.CardId).First().Topped > pmto.Amount){
@@ -599,7 +599,7 @@ namespace CosmosManagementApi.Controllers
                 //    }
                 //}
 
-                //_context.SaveChanges();//储存 获得bill主键id
+        _context.SaveChanges();//储存 获得bill主键id
 
         cprdPJ = MakePayProject(Bills.ProjectBills, bill.Id, billNumberInit);
 
@@ -875,7 +875,7 @@ namespace CosmosManagementApi.Controllers
             cp.ProjectId = a.ProjectId;
             cp.Number = a.ProjectNumber;
             _context.CustomerProjects.Add(cp);
-            //_context.SaveChanges(); //此处完成了增加三表的数据的动作 用户购买Project的动作完成
+            _context.SaveChanges(); //此处完成了增加三表的数据的动作 用户购买Project的动作完成
 
             Cprecord _cpRecord = new Cprecord()
             {

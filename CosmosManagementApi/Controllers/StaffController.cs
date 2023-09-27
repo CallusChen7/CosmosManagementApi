@@ -288,7 +288,7 @@ namespace CosmosManagementApi.Controllers
 
         var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddHours(1),//one hour will expire
+                expires: DateTime.Now.AddHours(2),//two hours will expire
                 signingCredentials:creds
         );
 
