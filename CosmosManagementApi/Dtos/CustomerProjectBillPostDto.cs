@@ -41,7 +41,7 @@ namespace CosmosManagementApi.Dtos
     /// <summary>
     /// how is it paid
     /// </summary>
-    public List<PaymentMethodDto>? PaymentMethods { get; set; }
+    //public List<PaymentMethodDto>? PaymentMethods { get; set; }
 
     /// <summary>
     /// Staff who made this purchase

@@ -47,6 +47,8 @@ public partial class CosmosManagementDbContext : DbContext
 
     public virtual DbSet<ProjectCategory> ProjectCategories { get; set; }
 
+    public virtual DbSet<PurchaseCategory> PurchaseCategories { get; set; }
+
     public virtual DbSet<Staff> Staffs { get; set; }
 
     public virtual DbSet<StaffAccount> StaffAccounts { get; set; }
@@ -56,7 +58,9 @@ public partial class CosmosManagementDbContext : DbContext
     public virtual DbSet<StaffProjectBill> StaffProjectBills { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    { }
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=43.155.94.131,1433;Database=CosmosManagementDb;User ID=Callus;Password=18873939977Smart;TrustServerCertificate=true");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Bill>(entity =>
@@ -82,6 +86,10 @@ public partial class CosmosManagementDbContext : DbContext
                 .HasMaxLength(100)
                 .HasComment("Original price")
                 .HasColumnName("Ori_price");
+            entity.Property(e => e.PaymentMethod)
+                .HasMaxLength(255)
+                .HasComment("PaymentMehtods")
+                .HasColumnName("Payment_method");
             entity.Property(e => e.Time)
                 .HasComment("When made")
                 .HasColumnType("datetime");
@@ -188,6 +196,9 @@ public partial class CosmosManagementDbContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("path to customer img");
             entity.Property(e => e.IsDeleted).HasComment("0 for not 1 for Deleted");
+            entity.Property(e => e.Kind)
+                .HasMaxLength(125)
+                .HasComment("What kind of User is it");
             entity.Property(e => e.KnoingMethod)
                 .HasMaxLength(255)
                 .HasComment("How Knows This Company")
@@ -228,6 +239,9 @@ public partial class CosmosManagementDbContext : DbContext
             entity.Property(e => e.BillId)
                 .HasComment("Bill id")
                 .HasColumnName("Bill_id");
+            entity.Property(e => e.Comment)
+                .HasMaxLength(255)
+                .HasComment("Comment of this bill");
             entity.Property(e => e.CustomerId)
                 .HasComment("Customer id")
                 .HasColumnName("Customer_id");
@@ -308,6 +322,12 @@ public partial class CosmosManagementDbContext : DbContext
             entity.Property(e => e.BillId)
                 .HasComment("Bill id")
                 .HasColumnName("Bill_id");
+            entity.Property(e => e.Category)
+                .HasMaxLength(255)
+                .HasComment("which category this bill belongs to");
+            entity.Property(e => e.Comment)
+                .HasMaxLength(255)
+                .HasComment("Comment of this bill");
             entity.Property(e => e.CustomerId)
                 .HasComment("Customer id")
                 .HasColumnName("Customer_id");
@@ -529,6 +549,23 @@ public partial class CosmosManagementDbContext : DbContext
                 .HasComment("When Input TIme")
                 .HasColumnType("datetime")
                 .HasColumnName("Writing_Time");
+        });
+
+        modelBuilder.Entity<PurchaseCategory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Purchase__3214EC07A4465011");
+
+            entity.ToTable("PurchaseCategory");
+
+            entity.Property(e => e.Id).HasComment("PrimaryKey");
+            entity.Property(e => e.Category)
+                .HasMaxLength(255)
+                .HasComment("Purchase category after topup");
+            entity.Property(e => e.IsDeleted).HasComment("1 for deleted");
+            entity.Property(e => e.WritingTime)
+                .HasComment("when record")
+                .HasColumnType("date")
+                .HasColumnName("Writing_time");
         });
 
         modelBuilder.Entity<Staff>(entity =>

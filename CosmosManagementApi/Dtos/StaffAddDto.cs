@@ -12,7 +12,7 @@ namespace CosmosManagementApi.Dtos
     /// <summary>
     /// StaffName
     /// </summary>
-    public string? StaffName { get; set; }
+    public string StaffName { get; set; } = string.Empty;
 
     /// <summary>
     /// Staff English name
@@ -77,7 +77,7 @@ namespace CosmosManagementApi.Dtos
     /// <summary>
     /// Password
     /// </summary>
-    public string? Pwd { get; set; }
+    public string Pwd { get; set; } = string.Empty;
 
     /// <summary>
     /// 5 for max level

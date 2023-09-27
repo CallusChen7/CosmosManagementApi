@@ -40,6 +40,11 @@ public partial class Bill
     /// </summary>
     public string? Comment { get; set; }
 
+    /// <summary>
+    /// PaymentMehtods
+    /// </summary>
+    public string? PaymentMethod { get; set; }
+
     public virtual ICollection<CardBill> CardBills { get; } = new List<CardBill>();
 
     public virtual ICollection<CustomerProductBill> CustomerProductBills { get; } = new List<CustomerProductBill>();

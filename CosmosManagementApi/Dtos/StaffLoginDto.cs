@@ -7,11 +7,11 @@ namespace CosmosManagementApi.Dtos
     /// <summary>
     /// Account Name
     /// </summary>
-    public string? AccountName { get; set; }
+    public string AccountName { get; set; } = string.Empty;
 
     /// <summary>
     /// Password
     /// </summary>
-    public string? Pwd { get; set; }
+    public string Pwd { get; set; } = string.Empty; 
   }
 }

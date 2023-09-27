@@ -55,6 +55,11 @@ public partial class CustomerProductBill
     /// </summary>
     public string? Discount { get; set; }
 
+    /// <summary>
+    /// Comment of this bill
+    /// </summary>
+    public string? Comment { get; set; }
+
     public virtual Bill Bill { get; set; } = null!;
 
     public virtual Customer Customer { get; set; } = null!;

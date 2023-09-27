@@ -46,6 +46,12 @@ namespace CosmosManagementApi.Profiles
       CreateMap<ProjectCategory, ProjectCategoriesGetDto>();
       CreateMap<ProjectCategory, ProjectCategoriesPostDto>();
 
+      //PurchaseCategory
+      CreateMap<PurchaseCategoriesGetDto, PurchaseCategory>();
+      CreateMap<PurchaseCategoriesPostDto, PurchaseCategory>();
+      CreateMap<PurchaseCategory, PurchaseCategoriesGetDto>();
+      CreateMap<PurchaseCategory, PurchaseCategoriesPostDto>();
+
 
       CreateMap<StaffAddDto, Staff>();
       CreateMap<Staff, StaffAddDto>();

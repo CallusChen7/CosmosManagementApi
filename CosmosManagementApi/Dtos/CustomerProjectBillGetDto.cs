@@ -30,6 +30,8 @@ namespace CosmosManagementApi.Dtos
 
     public string? StaffName { get; set; }
 
+    public string? CommentOfProjectLine { get; set; }
+
     public Project? Project { get; set; }
   }
 }

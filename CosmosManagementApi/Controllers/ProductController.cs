@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CosmosManagementApi.Dtos;
 using CosmosManagementApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Text.RegularExpressions;
@@ -25,6 +26,8 @@ namespace CosmosManagementApi.Controllers
     }
 
     // GET: api/<ProductController>
+    //获取产品
+    [Authorize(Roles = "O1Staff, Admin")]
     [HttpGet]
     public IActionResult Get()
     {
@@ -43,7 +46,9 @@ namespace CosmosManagementApi.Controllers
     }
     
     // GET: api/<ProductController>
+    //获取库存
     [HttpGet("CheckStorage")]
+    [Authorize(Roles = "O1Staff, Admin")]
     public IActionResult GetStorage()
     {
       var result = _context.ProductClasses.Where(p => p.Storage <= 5).ToList();
@@ -61,7 +66,9 @@ namespace CosmosManagementApi.Controllers
     }
 
     // GET api/<ProductController>/5
+    //获取单个产品
     [HttpGet("{id}")]
+    [Authorize(Roles = "O1Staff, Admin")]
     public IActionResult Get(int id)
     {
       if(id == 0){
@@ -87,6 +94,7 @@ namespace CosmosManagementApi.Controllers
     //返还产品种类
     // GET: api/GetProdutClass<ProductController>
     [HttpGet("GetProdutClass")]
+    [Authorize(Roles = "O1Staff, Admin")]
     public IEnumerable<ProductClassDto> GetProductClass()
     {
       var result = _context.ProductClasses.ToList();
@@ -97,6 +105,7 @@ namespace CosmosManagementApi.Controllers
     //返还产品种类下所有产品
     // GET: api/GetProdutsInClass<ProductController>
     [HttpGet("GetProdutsInClass")]
+    [Authorize(Roles = "O1Staff, Admin")]
     public IActionResult GetProdutsInClass(int classId)
     {
       var result = _context.Products.Join(_context.ProductCategories, a => a.Id, b => b.ProductId, (a, b) => //join 两表 获取数据
@@ -124,6 +133,7 @@ namespace CosmosManagementApi.Controllers
     //增加相应种类下产品数 并计入入库账单
     // POST api/<ProductController>
     [HttpPost("AddProduct")]
+    [Authorize(Roles = "Admin")]
     public IActionResult Post([FromBody] ProductAddDto value)
     {
       if (value == null)
@@ -148,6 +158,7 @@ namespace CosmosManagementApi.Controllers
 
     //增加新的产品种类 同时计入入库账单
     [HttpPost("AddNewProduct")]
+    [Authorize(Roles = "Admin")]
     public IActionResult PostNew([FromBody] ProductClassAddDto value)
     {
       if (value == null) {
@@ -192,7 +203,9 @@ namespace CosmosManagementApi.Controllers
     }
 
     // PUT api/<ProductController>/5
+    //修改产品信息
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult Put(int id, [FromBody] ProductClassUpdateDto value)
     {
       var update = _context.ProductClasses.Find(id);
@@ -216,6 +229,7 @@ namespace CosmosManagementApi.Controllers
 
     // DELETE api/<ProductController>/5
     [HttpDelete("{id}")]
+    [Authorize]
     public void Delete(int id)
     {
     }

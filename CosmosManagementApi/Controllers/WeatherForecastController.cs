@@ -19,7 +19,7 @@ namespace CosmosManagementApi.Controllers
       _logger = logger;
     }
 
-    [Authorize]
+    [Authorize(Roles = "O1Staff")]
     [HttpGet(Name = "GetWeatherForecast")]
     public IEnumerable<WeatherForecast> Get()
     {

@@ -20,6 +20,7 @@ namespace CosmosManagementApi.Dtos
     /// </summary>
     public string? Pwd { get; set; }
 
+
     /// <summary>
     /// 5 for max level
     /// </summary>

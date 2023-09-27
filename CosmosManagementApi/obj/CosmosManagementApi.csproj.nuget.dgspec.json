@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\CosmosInternshipWork\\WebApi\\CosmosManagementApi\\CosmosManagementApi\\CosmosManagementApi.csproj": {}
+    "E:\\CosmosInternshipWork\\WebApi\\ServerCosmosManagement\\CosmosManagementApi\\CosmosManagementApi\\CosmosManagementApi.csproj": {}
   },
   "projects": {
-    "E:\\CosmosInternshipWork\\WebApi\\CosmosManagementApi\\CosmosManagementApi\\CosmosManagementApi.csproj": {
+    "E:\\CosmosInternshipWork\\WebApi\\ServerCosmosManagement\\CosmosManagementApi\\CosmosManagementApi\\CosmosManagementApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\CosmosInternshipWork\\WebApi\\CosmosManagementApi\\CosmosManagementApi\\CosmosManagementApi.csproj",
+        "projectUniqueName": "E:\\CosmosInternshipWork\\WebApi\\ServerCosmosManagement\\CosmosManagementApi\\CosmosManagementApi\\CosmosManagementApi.csproj",
         "projectName": "CosmosManagementApi",
-        "projectPath": "E:\\CosmosInternshipWork\\WebApi\\CosmosManagementApi\\CosmosManagementApi\\CosmosManagementApi.csproj",
+        "projectPath": "E:\\CosmosInternshipWork\\WebApi\\ServerCosmosManagement\\CosmosManagementApi\\CosmosManagementApi\\CosmosManagementApi.csproj",
         "packagesPath": "C:\\Users\\Callus\\.nuget\\packages\\",
-        "outputPath": "E:\\CosmosInternshipWork\\WebApi\\CosmosManagementApi\\CosmosManagementApi\\obj\\",
+        "outputPath": "E:\\CosmosInternshipWork\\WebApi\\ServerCosmosManagement\\CosmosManagementApi\\CosmosManagementApi\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -52,6 +52,10 @@
               "target": "Package",
               "version": "[4.0.3, )"
             },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[6.0.18, )"
+            },
             "Microsoft.AspNetCore.HttpOverrides": {
               "target": "Package",
               "version": "[2.2.0, )"
@@ -77,6 +81,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.2.3, )"
+            },
+            "Swashbuckle.AspNetCore.Filters": {
+              "target": "Package",
+              "version": "[7.0.6, )"
             }
           },
           "imports": [

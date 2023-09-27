@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using CosmosManagementApi.Dtos;
 using CosmosManagementApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
 using System.Drawing;
 using System.Linq;
@@ -28,6 +30,7 @@ namespace CosmosManagementApi.Controllers
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public IActionResult Get() 
     {
       var cardTable = _context.Cards.Join(_context.Customers,
@@ -48,6 +51,7 @@ namespace CosmosManagementApi.Controllers
 
     //获取单个会员card和会员信息 
     [HttpGet("{id}")]
+    [Authorize(Roles = "O1Staff, Admin")]
     public IActionResult Get(int id)
     {
       if(!_context.Customers.Any(c => c.Id == id))
@@ -74,6 +78,7 @@ namespace CosmosManagementApi.Controllers
     }
 
     //获取card 
+    [Authorize(Roles = "O1Staff, Admin")]
     [HttpGet("CustomerCard/{id}")]
     public IActionResult GetCusteomrCard(int id)
     {
@@ -81,7 +86,19 @@ namespace CosmosManagementApi.Controllers
       {
         return BadRequest("用户不存在");
       }
-      var cardTable = _context.Cards.Where(c => c.CustomerId == id)
+      if (_context.Cards.Where(c => c.CustomerId == id && c.Topped != 0).IsNullOrEmpty())
+      {
+        var cardNullTable = new
+        {
+            CardId = 999999,
+            CardNo = "不存在",
+            Topped = 0,
+            Discount = "D",
+        };
+        return Ok(cardNullTable);
+      }
+
+      var cardTable = _context.Cards.Where(c => c.CustomerId == id && c.Topped != 0)
       .Select(m => new
       {
         CardId = m.Id,
@@ -90,12 +107,11 @@ namespace CosmosManagementApi.Controllers
         Discount = m.CardNo == "S"?0.4 : m.CardNo =="A"? 0.6: m.CardNo == "B"?0.7 : m.CardNo == "C"?0.8: 1.0,
       }).ToList();
 
-
-
       return Ok(cardTable);
     }
 
     //添加新卡
+    [Authorize(Roles = "O1Staff, Admin")]
     [HttpPost("AddNewCard")]
     public IActionResult PostAddNewCard([FromBody] CardAddDto value)
     {

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CosmosManagementApi.Dtos;
 using CosmosManagementApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Identity.Client;
@@ -30,7 +31,9 @@ namespace CosmosManagementApi.Controllers
     }
 
     // GET: api/<ProductController>
+    //获取所有项目信息
     [HttpGet]
+    [Authorize(Roles = "O1Staff, Admin")]
     public IActionResult Get()
     {
       var result = _context.Projects.Where(p => p.IsDeleted == 0).ToList();
@@ -47,8 +50,11 @@ namespace CosmosManagementApi.Controllers
       };
     }
 
-    // GET api/<ProductController>/5
+    // GET api/<ProjectController>/5
+    //获取单个项目信息
     [HttpGet("{id}")]
+    [Authorize(Roles = "O1Staff, Admin")]
+
     public IActionResult Get(int id)
     {
       if (id == 0)
@@ -73,7 +79,10 @@ namespace CosmosManagementApi.Controllers
       };
     }
 
+    //获取用户项目记录
     [HttpGet("CustomerProjectRecords/{id}")]
+    [Authorize(Roles = "O1Staff, Admin")]
+
     public IActionResult GetCustomerPR(int id) 
     {
       var _table = _context.CustomerProjects.Where(m => m.CustomerId == id)
@@ -101,6 +110,8 @@ namespace CosmosManagementApi.Controllers
 
     }
 
+    //获取单个用户产品项目剩余次数
+    [Authorize(Roles = "O1Staff, Admin")]
     [HttpGet("GetCustomerProjectNumber/{id}")]
     public IActionResult GetCustomerProjectNumber(int id)
     {
@@ -134,6 +145,7 @@ namespace CosmosManagementApi.Controllers
 
 
     //获取项目种类
+    [Authorize(Roles = "O1Staff, Admin")]
     [HttpGet("GetCategories")]
     public IActionResult GetCategories()
     {
@@ -142,7 +154,18 @@ namespace CosmosManagementApi.Controllers
       return Ok(map);
     }
 
+    //获取充值後客⼈的消費選項
+    [Authorize(Roles = "O1Staff, Admin")]
+    [HttpGet("GetCategories")]
+    public IActionResult GetPurchaseCategories()
+    {
+      var result = _context.PurchaseCategories.Where(p => p.IsDeleted == 0).ToList();
+      var map = _mapper.Map<IEnumerable<ProjectCategoriesGetDto>>(result);
+      return Ok(map);
+    }
+
     //传输新增项目种类
+    [Authorize(Roles = "Admin")]
     [HttpPost("AddCategories")]
     public IActionResult PostCategories([FromBody] ProjectCategoriesPostDto value)
     {
@@ -160,13 +183,34 @@ namespace CosmosManagementApi.Controllers
       return Ok(map);
     }
 
+    //传输新增充值後客⼈的消費選項
+    [Authorize(Roles = "Admin")]
+    [HttpPost("AddPurchaseCategories")]
+    public IActionResult PostPurchaseCategories([FromBody] PurchaseCategoriesPostDto value)
+    {
+      if(value == null){
+        return BadRequest("传输值为零");
+      }
+      if (_context.PurchaseCategories.Any(p => p.Category == value.Category)){
+        return BadRequest("项目种类已存在");
+      }
+      var map = _mapper.Map<PurchaseCategory>(value);
+      map.IsDeleted = 0;
+      map.WritingTime = DateTime.Now;
+      _context.PurchaseCategories.Add(map);
+      _context.SaveChanges();
+      return Ok(map);
+    }
+
 
     // POST api/<ProductController>
+    // 新增项目
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public IActionResult Post([FromBody] ProjectAddDto value)
     {
       if(value == null){
-        return BadRequest("传输产品为空");
+        return BadRequest("传输项目为空");
       }
       if(value.ProjectTimes == null || value.ProjectTimes == 0){
         return BadRequest("传输参数不规范"); //传输的project拥有的次数需不为空
@@ -181,6 +225,7 @@ namespace CosmosManagementApi.Controllers
     //核销
     // POST api/<ProjectController>
     [HttpPost("WriteOff")]
+    [Authorize(Roles = "O1Staff, Admin")]
     public IActionResult PostVerification([FromBody] WriteOffDto value)
     {
       if (value == null)
@@ -193,8 +238,8 @@ namespace CosmosManagementApi.Controllers
         return BadRequest("此待核销记录不存在"); //传输的project拥有的次数需不为空
       }
 
-      //var rootPath = "C:\\Users\\Administrator\\Pictures\\PICS\\";
-      var rootPath = "C:\\Users\\Callus\\Pictures\\素材\\";
+      var rootPath = "C:\\Users\\Administrator\\Pictures\\PICS\\";
+      //var rootPath = "C:\\Users\\Callus\\Pictures\\素材\\";
 
       var des = _context.CustomerProjects.Where(a => a.CustomerId == value.Customer_id && a.ProjectId == value.Project_id).First();
       Cprecord _cpRecord = new Cprecord();
@@ -249,6 +294,7 @@ namespace CosmosManagementApi.Controllers
 
     //核销上传签名
     // POST api/<ProjectController>
+    [Authorize(Roles = "O1Staff, Admin")]
     [HttpPost("Signature/{id}")]
     public IActionResult PostSignature([FromBody] string base64,int id)
     {
@@ -281,6 +327,8 @@ namespace CosmosManagementApi.Controllers
 
 
     // PUT api/<ProductController>/5
+    //修改项目信息
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public IActionResult Put(int id, [FromBody] ProjectUpdateDto value)
     {
@@ -310,7 +358,9 @@ namespace CosmosManagementApi.Controllers
     }
 
     // DELETE api/<ProjectController>/5
+    //删除项目信息
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult Delete(int id)
     {
       var delete = _context.Projects.Find(id);

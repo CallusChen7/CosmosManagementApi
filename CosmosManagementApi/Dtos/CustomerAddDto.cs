@@ -27,7 +27,11 @@ namespace CosmosManagementApi.Dtos
     /// <summary>
     /// Customer birthday
     /// </summary>
-    public DateTime? Birthday { get; set; }
+    public int BirthdayYear { get; set; } = 1900;
+
+    public int BirthdayMonth { get; set; } = 1;
+
+    public int BirthdayDay { get; set; } = 1;
 
     /// <summary>
     /// Cusomer Phone number

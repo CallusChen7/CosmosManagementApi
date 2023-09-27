@@ -90,6 +90,11 @@ public partial class Customer
     /// </summary>
     public string? Age { get; set; }
 
+    /// <summary>
+    /// What kind of User is it
+    /// </summary>
+    public string? Kind { get; set; }
+
     public virtual ICollection<Card> Cards { get; } = new List<Card>();
 
     public virtual ICollection<CustomerProductBill> CustomerProductBills { get; } = new List<CustomerProductBill>();

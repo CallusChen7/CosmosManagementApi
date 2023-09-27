@@ -9,6 +9,7 @@ using System.Text;
 using System.Collections;
 using System.Linq;
 using Microsoft.Office.Interop.Word;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -30,7 +31,9 @@ namespace CosmosManagementApi.Controllers
     } 
 
     // GET: api/<ValuesController>
+    //获取全部会员信息
     [HttpGet]
+    [Authorize(Roles = "O1Staff, Admin")]
     public IActionResult Get()
     {
       //var result = _context.Customers.Where(d => d.IsDeleted == 0).ToList();
@@ -44,9 +47,9 @@ namespace CosmosManagementApi.Controllers
                       NameCn = a.NameCn,
                       Rating = a.Rating,
                       Gender = a.Gender,
-                      BirthdayDay  = a.Birthday.Value.Day,
-                      BirthdayMonth = a.Birthday.Value.Month,
-                      BirthdayYear = a.Birthday.Value.Year,
+                      BirthdayDay  = a.Birthday == null ? null : a.Birthday.Value.Day,
+                      BirthdayMonth = a.Birthday == null ? null : a.Birthday.Value.Month,
+                      BirthdayYear = a.Birthday == null ? null : a.Birthday.Value.Year,
                       Phone = a.Phone,
                       Email = a.Email,
                       Location = a.Location,
@@ -72,12 +75,14 @@ namespace CosmosManagementApi.Controllers
     }
 
     // GET api/<ValuesController>/5
+    //获取单个会员信息
+    [Authorize(Roles = "O1Staff, Admin")]
     [HttpGet("{id}")]
     public IActionResult Get(int id)
     {
       var result = _context.Customers.Find(id);
       if(result == null || result.IsDeleted == 1){
-        return NotFound();
+        return NotFound("无此顾客");
       }
       CustomerGetDto map = new CustomerGetDto
                     {
@@ -86,9 +91,9 @@ namespace CosmosManagementApi.Controllers
                       NameCn = result.NameCn,
                       Rating = result.Rating,
                       Gender = result.Gender,
-                      BirthdayDay = result.Birthday.Value.Day,
-                      BirthdayMonth = result.Birthday.Value.Month,
-                      BirthdayYear = result.Birthday.Value.Year,
+                      BirthdayDay = result.Birthday == null ? null : result.Birthday.Value.Day,
+                      BirthdayMonth = result.Birthday == null ? null : result.Birthday.Value.Month,
+                      BirthdayYear = result.Birthday == null ? null :result.Birthday.Value.Year,
                       Phone = result.Phone,
                       Email = result.Email,
                       Location = result.Location,
@@ -131,6 +136,7 @@ namespace CosmosManagementApi.Controllers
     //获取客户的购买的产品
     //GET api/<ValuesController>/5
     [HttpGet("GetCustomerProductBills/{id}")]
+    [Authorize(Roles = "O1Staff, Admin")]
     public IActionResult GetCustomerProductBills(int id)
     {
       var result = _context.Bills.Join(_context.CustomerProductBills,
@@ -169,6 +175,7 @@ namespace CosmosManagementApi.Controllers
     //获取客户的购买的项目
     //GET api/<ValuesController>/5
     [HttpGet("GetCustomerProjectBills/{id}")]
+    [Authorize(Roles = "O1Staff, Admin")]
     public IActionResult GetCustomerProjectBills(int id)
     {
       var result = _context.Bills.Join(_context.CustomerProjectBills,
@@ -205,6 +212,7 @@ namespace CosmosManagementApi.Controllers
     //获取一年内生日的用户
     // GET: api/<ValuesController>
     [HttpGet("Birthday/year")]
+    [Authorize(Roles = "O1Staff, Admin")]
     public IActionResult GetCustomerBirthDAYInYear()
     {
       
@@ -248,6 +256,7 @@ namespace CosmosManagementApi.Controllers
     //获取一月内生日的用户
     // GET: api/<ValuesController>
     [HttpGet("Birthday/month")]
+    [Authorize(Roles = "O1Staff, Admin")]
     public IActionResult GetCustomerBirthDAYInMonth()
     {
 
@@ -288,15 +297,21 @@ namespace CosmosManagementApi.Controllers
       };
     }
 
-    //获取一月星期内生日的用户
+    //获取一星期内生日的用户
     // GET: api/<ValuesController>
     [HttpGet("Birthday/week")]
+    [Authorize(Roles = "O1Staff, Admin")]
     public IActionResult GetCustomerBirthDAYInWeek()
     {
-      DateTime endDate = DateTime.Now + new TimeSpan(4, 12, 0, 0) + new TimeSpan(2, 12, 0, 0);
+      //DateTime endDate = DateTime.Now + new TimeSpan(4, 12, 0, 0) + new TimeSpan(2, 12, 0, 0);
+
+      //DateTime 
+      int todayDate = DateTime.Today.Day;
+      int todayMonth = DateTime.Today.Month;
+      DateTime startDate = new DateTime(1993, todayMonth, todayDate);
+      DateTime endDate = startDate.AddDays(7);
 
       var result = (from a in _context.Customers
-                    where DateTime.Now <= a.Birthday.Value && a.Birthday.Value <= endDate
                     select new CustomerGetDto
                     {
                       Id = a.Id,
@@ -318,12 +333,27 @@ namespace CosmosManagementApi.Controllers
                       KnoingMethod = a.KnoingMethod,
                       Age = a.Age,
                     }).ToList();
-
+      var return_list = new List<CustomerGetDto>();
+      DateTime c_birthday = new DateTime(1993, 1, 1);
+        foreach(var a in result){
+            if(a.BirthdayDay == null){
+                continue;
+            }
+            if(a.BirthdayMonth == null){
+                continue;
+            }
+            int cBrithDayMonth = a.BirthdayMonth.Value;
+            int cBrithDayDay = a.BirthdayDay.Value;
+            c_birthday = new DateTime(1993, cBrithDayMonth, cBrithDayDay);
+            if (c_birthday >= startDate && c_birthday <= endDate){
+              return_list.Add(a);
+            }
+        }
       var r_json = new
       {
         total = result.Count(),
         totalNotFiltered = result.Count(),
-        rows = result
+        rows = return_list
       };
       return new JsonResult(r_json)
       {
@@ -332,7 +362,9 @@ namespace CosmosManagementApi.Controllers
     }
 
     // POST api/<ValuesController>
+    //新增会员
     [HttpPost]
+    [Authorize(Roles = "O1Staff, Admin")]
     public IActionResult Post([FromBody] CustomerAddDto value)
     {
       if (value == null)
@@ -344,6 +376,7 @@ namespace CosmosManagementApi.Controllers
       map.IsDeleted = 0; //At created Customer is not deleted
       map.Point = 0; // initial point is 0
       map.Level = "iron"; // lowerest level inital
+      map.Birthday = new DateTime(value.BirthdayYear, value.BirthdayMonth, value.BirthdayDay);
 
       _context.Customers.Add(map);
       _context.SaveChanges(); 
@@ -351,7 +384,9 @@ namespace CosmosManagementApi.Controllers
     }
 
     // PUT api/<ValuesController>/5
+    //修改会员信息
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult Put(int id, [FromBody] CustomerUpdateDto value)
     {
       var update = _context.Customers.Find(id);
@@ -370,7 +405,9 @@ namespace CosmosManagementApi.Controllers
     }
 
     // DELETE api/<ValuesController>/5
+    //删除用户
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult Delete(int id)
     {
       var delete = _context.Customers.Find(id);
@@ -380,6 +417,25 @@ namespace CosmosManagementApi.Controllers
       delete.IsDeleted = 1;
       _context.SaveChanges(); //不进行直接删除 只将is deleted 设置为1 表示已经删除
       return Ok("用户已删除");
+    }
+
+    private bool isBirthWeek(DateTime birthDate)
+    {
+       DateTime dtStart = DateTime.Today;
+
+            // Find the previous monday
+       while (dtStart.DayOfWeek != DayOfWeek.Monday)
+       {
+          dtStart = dtStart.AddDays(-1);
+       }
+
+       DateTime dtEnd = dtStart.AddDays(7);
+
+       int dayStart = dtStart.DayOfYear;
+       int dayEnd = dtEnd.DayOfYear;
+       int birthDay = birthDate.DayOfYear;
+       return (birthDay >= dayStart && birthDay < dayEnd);
+
     }
 
   }

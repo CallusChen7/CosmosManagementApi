@@ -69,5 +69,17 @@ namespace CosmosManagementApi.Dtos
     /// </summary>
     public int? PositionId { get; set; }
 
+    public string? AccountName { get; set; }
+
+    /// <summary>
+    /// Password
+    /// </summary>
+    public string Pwd { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 5 for max level
+    /// </summary>
+    public int? Level { get; set; }
+
   }
 }
