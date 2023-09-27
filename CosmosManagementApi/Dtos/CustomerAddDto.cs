@@ -82,5 +82,6 @@ namespace CosmosManagementApi.Dtos
     /// User Age in brief
     /// </summary>
     public string? Age { get; set; }
+    public string? Kind { get; set; }
   }
 }

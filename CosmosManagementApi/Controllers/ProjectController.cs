@@ -156,7 +156,7 @@ namespace CosmosManagementApi.Controllers
 
     //获取充值後客⼈的消費選項
     [Authorize(Roles = "O1Staff, Admin")]
-    [HttpGet("GetCategories")]
+    [HttpGet("GetPurchaseCategories")]
     public IActionResult GetPurchaseCategories()
     {
       var result = _context.PurchaseCategories.Where(p => p.IsDeleted == 0).ToList();

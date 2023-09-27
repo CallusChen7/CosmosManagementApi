@@ -60,6 +60,7 @@ namespace CosmosManagementApi.Controllers
                       Comment = a.Comment,
                       KnoingMethod = a.KnoingMethod,
                       Age = a.Age,
+                      Kind = a.Kind,
                     });
 
       var r_json = new
@@ -104,6 +105,7 @@ namespace CosmosManagementApi.Controllers
                       Comment = result.Comment,
                       KnoingMethod = result.KnoingMethod,
                       Age = result.Age,
+                      Kind = result.Kind,
                     };
       var projectTable = _context.Projects.Join(_context.CustomerProjects,
         project => project.Id, customerProject => customerProject.ProjectId,
@@ -239,6 +241,7 @@ namespace CosmosManagementApi.Controllers
                       Comment = a.Comment,
                       KnoingMethod = a.KnoingMethod,
                       Age = a.Age,
+                      Kind = a.Kind,
                     }).ToList();
 
       var r_json = new
@@ -283,6 +286,7 @@ namespace CosmosManagementApi.Controllers
                       Comment = a.Comment,
                       KnoingMethod = a.KnoingMethod,
                       Age = a.Age,
+                      Kind = a.Kind,
                     }).ToList();
 
       var r_json = new
@@ -332,6 +336,7 @@ namespace CosmosManagementApi.Controllers
                       Comment = a.Comment,
                       KnoingMethod = a.KnoingMethod,
                       Age = a.Age,
+                      Kind = a.Kind,
                     }).ToList();
       var return_list = new List<CustomerGetDto>();
       DateTime c_birthday = new DateTime(1993, 1, 1);
